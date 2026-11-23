@@ -1,278 +1,55 @@
 <!doctype html>
-<html lang="bn">
-<head>
+<html lang="bn"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#4f46e5">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Humanizer">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='white' stroke-width='9'/%3E%3Ccircle cx='50' cy='50' r='9' fill='white'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Humanizer</title>
 <style>
-:root{
-  --bg:#f6f7fb; --card:#ffffff; --ink:#1b1d2a; --muted:#6b7086; --line:#e3e5ef;
-  --brand:#4f46e5; --brand-ink:#ffffff; --soft:#eef0ff; --ok:#0f9d58; --err:#c62828;
-}
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#0f1117; --card:#181b25; --ink:#eceef7; --muted:#9aa0b8; --line:#2a2e3d;
-         --brand:#7c76ff; --brand-ink:#0f1117; --soft:#222542; --ok:#41c883; --err:#ff7a7a; }
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0}
-body{
-  background:var(--bg); color:var(--ink);
-  font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Bengali","Hind Siliguri",sans-serif;
-  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
-}
-.wrap{max-width:720px;margin:0 auto;padding:0 16px 32px}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 0 8px}
-h1{font-size:20px;margin:0;letter-spacing:.2px}
-h1 span{color:var(--brand)}
-.icon-btn{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:12px;
-  width:42px;height:42px;font-size:18px;cursor:pointer}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px}
-label.t{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
-textarea{width:100%;min-height:170px;resize:vertical;border:1px solid var(--line);border-radius:12px;
-  background:transparent;color:var(--ink);padding:12px;font:inherit;line-height:1.6;outline:none}
-textarea:focus,select:focus,input:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent)}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.row>*{flex:1 1 140px}
-select,input[type=text],input[type=password]{width:100%;border:1px solid var(--line);border-radius:12px;
-  background:transparent;color:var(--ink);padding:11px 12px;font:inherit;outline:none}
-select option{color:#111}
-.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12.5px;margin-top:6px}
-button.primary{width:100%;margin-top:12px;background:var(--brand);color:var(--brand-ink);border:0;
-  border-radius:14px;padding:14px;font:inherit;font-weight:700;cursor:pointer}
-button.primary:disabled{opacity:.6;cursor:wait}
-button.ghost{background:var(--soft);color:var(--ink);border:0;border-radius:10px;padding:9px 12px;
-  font:inherit;font-size:14px;cursor:pointer}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-#out{white-space:pre-wrap;word-wrap:break-word;line-height:1.7}
-.msg{margin-top:12px;padding:12px;border-radius:12px;font-size:14.5px}
-.msg.err{background:color-mix(in srgb,var(--err) 12%,transparent);color:var(--err);border:1px solid color-mix(in srgb,var(--err) 40%,transparent)}
-.msg.info{background:var(--soft)}
-.hidden{display:none!important}
-details{margin-top:12px}
-summary{cursor:pointer;color:var(--muted);font-size:14px}
-.hist-item{border-top:1px solid var(--line);padding:10px 0;font-size:14px;cursor:pointer}
-.hist-item small{color:var(--muted);display:block}
-dialog{border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);
-  width:min(92vw,520px);padding:18px}
-dialog::backdrop{background:rgba(0,0,0,.45)}
-dialog h2{margin:0 0 10px;font-size:18px}
-dialog p{font-size:13.5px;color:var(--muted);margin:6px 0 12px}
-dialog a{color:var(--brand)}
-.field{margin-bottom:12px}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;
-  border-radius:50%;animation:r .7s linear infinite;vertical-align:-2px;margin-right:8px}
-@keyframes r{to{transform:rotate(360deg)}}
-footer{color:var(--muted);font-size:12px;text-align:center;margin-top:18px}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>Human<span>izer</span></h1>
-    <button class="icon-btn" id="openSettings" aria-label="সেটিংস">⚙️</button>
-  </header>
-
-  <div class="card">
-    <label class="t" for="inp">আপনার লেখা (যে ভাষায় লিখবেন, ফলাফল সেই ভাষাতেই আসবে)</label>
-    <textarea id="inp" placeholder="এখানে AI-র লেখা টেক্সট পেস্ট করুন..."></textarea>
-    <div class="meta"><span id="inCount">0 শব্দ</span>
-      <button class="ghost" id="pasteBtn" type="button">📋 পেস্ট</button></div>
-
-    <div class="row" style="margin-top:12px">
-      <div>
-        <label class="t" for="tone">স্টাইল</label>
-        <select id="tone">
-          <option value="natural">স্বাভাবিক</option>
-          <option value="casual">কথ্য / ক্যাজুয়াল</option>
-          <option value="formal">ফরমাল</option>
-          <option value="academic">একাডেমিক</option>
-          <option value="blog">ব্লগ / ফ্রেন্ডলি</option>
-        </select>
-      </div>
-      <div>
-        <label class="t" for="strength">কতটা বদলাবে</label>
-        <select id="strength">
-          <option value="light">হালকা</option>
-          <option value="medium" selected>মাঝারি</option>
-          <option value="strong">বেশি</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="primary" id="go">✨ হিউম্যানাইজ করুন</button>
-    <div id="status"></div>
-  </div>
-
-  <div class="card hidden" id="outCard">
-    <label class="t">ফলাফল</label>
-    <div id="out"></div>
-    <div class="meta"><span id="outCount"></span><span></span></div>
-    <div class="actions">
-      <button class="ghost" id="copyBtn">📄 কপি</button>
-      <button class="ghost" id="shareBtn">📤 শেয়ার</button>
-      <button class="ghost" id="reuseBtn">↩️ ইনপুটে নিন</button>
-      <button class="ghost" id="againBtn">🔁 আবার</button>
-    </div>
-  </div>
-
-  <details id="histBox" class="hidden">
-    <summary>সাম্প্রতিক কাজ (এই ফোনে সেভ থাকে)</summary>
-    <div id="hist"></div>
-    <div class="actions"><button class="ghost" id="clearHist">ইতিহাস মুছুন</button></div>
-  </details>
-
-  <footer>আপনার লেখা সরাসরি Google Gemini-তে যায়। এই অ্যাপের নিজস্ব কোনো সার্ভার নেই।</footer>
+body{margin:0;font:16px/1.6 system-ui,sans-serif;background:#f4f5fb;color:#1b1d2a;padding:14px}
+.c{max-width:700px;margin:auto}
+textarea,input,select{width:100%;box-sizing:border-box;padding:11px;border:1px solid #ccd;border-radius:10px;font:inherit;margin:6px 0}
+textarea{min-height:170px}
+button{width:100%;padding:13px;border:0;border-radius:12px;background:#4f46e5;color:#fff;font:inherit;font-weight:700;margin-top:8px}
+button.g{background:#e3e5ff;color:#222;font-weight:400}
+#out{white-space:pre-wrap;background:#fff;border-radius:12px;padding:12px;margin-top:12px}
+#st{color:#c62828;margin-top:8px}
+#set{display:none;background:#fff;padding:12px;border-radius:12px;margin-bottom:10px}
+</style></head><body><div class="c">
+<h2>Humanizer</h2>
+<button class="g" onclick="set.style.display=set.style.display=='block'?'none':'block'">⚙️ সেটিংস</button>
+<div id="set">
+<input id="key" type="password" placeholder="Gemini API Key (AIza...)">
+<input id="model" placeholder="মডেল" value="gemini-flash-latest">
+<button onclick="sv()">সেভ</button></div>
+<textarea id="inp" placeholder="AI-র লেখা এখানে পেস্ট করুন..."></textarea>
+<select id="tone">
+<option value="natural">স্বাভাবিক</option>
+<option value="casual">ক্যাজুয়াল</option>
+<option value="formal">ফরমাল</option>
+<option value="academic">একাডেমিক</option></select>
+<button id="go" onclick="run()">✨ হিউম্যানাইজ করুন</button>
+<div id="st"></div>
+<div id="out" style="display:none"></div>
+<button class="g" id="cp" style="display:none" onclick="navigator.clipboard.writeText(out.textContent);this.textContent='✔ কপি হয়েছে'">📄 কপি</button>
 </div>
-
-<dialog id="dlg">
-  <h2>সেটিংস</h2>
-  <div class="field">
-    <label class="t" for="key">Gemini API Key</label>
-    <input id="key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="AIza...">
-    <p>ফ্রিতে নিন: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>
-      (Google একাউন্ট দিয়ে লগইন করে "Create API key")। কী শুধু আপনার ফোনের ব্রাউজারে থাকে।</p>
-  </div>
-  <div class="field">
-    <label class="t" for="model">মডেল</label>
-    <input id="model" type="text" autocapitalize="off" spellcheck="false" placeholder="gemini-flash-latest">
-    <p>ডিফল্ট <b>gemini-flash-latest</b> রাখুন। ফ্রি লিমিটে সমস্যা হলে অন্য মডেলের নাম বসাতে পারেন।</p>
-  </div>
-  <div class="field">
-    <label class="t" for="sample">আপনার নিজের লেখার নমুনা (ঐচ্ছিক)</label>
-    <textarea id="sample" style="min-height:110px" placeholder="আপনার নিজের লেখা ২-৩ অনুচ্ছেদ দিন, আউটপুট যেন আপনার ভঙ্গিতে হয়।"></textarea>
-  </div>
-  <div class="row">
-    <button class="ghost" id="saveSettings" style="background:var(--brand);color:var(--brand-ink);font-weight:700">সেভ করুন</button>
-    <button class="ghost" id="closeSettings">বন্ধ</button>
-  </div>
-</dialog>
-
 <script>
-(function(){
-  "use strict";
-  var $ = function(s){return document.querySelector(s)};
-
-  var store = {
-    get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},
-    set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-  };
-
-  var BASE = [
-    "You are an expert human editor. Rewrite the user's text so it reads like it was written by a real person, while keeping the meaning exactly the same.",
-    "",
-    "Rules:",
-    "1. Write in the SAME language as the input text. Never translate.",
-    "2. Keep every fact, number, name, date, quote, URL and technical term unchanged. Do not add new facts or opinions.",
-    "3. Keep the paragraph structure, and keep any lists, headings or markdown the input already has.",
-    "4. Vary sentence length a lot: mix short punchy sentences with longer ones. Avoid a steady, even rhythm.",
-    "5. Remove stock AI phrasing and filler such as: 'delve', 'tapestry', 'in today's fast-paced world', 'it is important to note', 'moreover', 'furthermore', 'in conclusion', 'plays a crucial role', 'a testament to', 'navigate the landscape', 'unlock the potential', 'game-changer'. Use plain, concrete words instead. For other languages, avoid the equivalent stiff, formulaic phrases.",
-    "6. Prefer simple words over fancy ones. Use contractions where natural in the language. Start some sentences with 'And', 'But' or 'So' if it fits.",
-    "7. Avoid overusing em dashes, triplets ('X, Y, and Z' everywhere), neat summary sentences at the end of every paragraph, and rhetorical questions.",
-    "8. Do not mention that you rewrote anything. Output ONLY the rewritten text, with no preface, notes or quotation marks around it."
-  ].join("\n");
-
-  var TONES = {
-    natural:"Tone: natural and clear, like a thoughtful person writing normally.",
-    casual:"Tone: relaxed and conversational, like talking to a friend. Simple everyday words.",
-    formal:"Tone: professional and polished, but still human. No stiff bureaucratic phrasing.",
-    academic:"Tone: academic and precise, but written by a person, not a template. Keep citations and terminology intact.",
-    blog:"Tone: warm, friendly blog voice. Direct, a little personality, easy to read."
-  };
-  var STRENGTH = {
-    light:"Edit lightly: keep most of the original wording and structure, only fix the robotic parts.",
-    medium:"Edit moderately: rephrase most sentences and reorder ideas inside paragraphs where it helps.",
-    strong:"Rewrite heavily: change sentence structure and wording thoroughly, while keeping every fact and the paragraph order."
-  };
-
-  function words(t){var m=t.trim().match(/\S+/g);return m?m.length:0}
-  function setStatus(html,cls){
-    var el=$("#status");
-    el.innerHTML = html ? '<div class="msg '+(cls||"info")+'">'+html+'</div>' : "";
-  }
-  function esc(s){return s.replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-
-  /* ---------- settings ---------- */
-  var dlg=$("#dlg");
-  function openSettings(){
-    $("#key").value=store.get("key","");
-    $("#model").value=store.get("model","gemini-flash-latest");
-    $("#sample").value=store.get("sample","");
-    if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open","");
-  }
-  function closeSettings(){ if(dlg.close) dlg.close(); else dlg.removeAttribute("open"); }
-  $("#openSettings").onclick=openSettings;
-  $("#closeSettings").onclick=closeSettings;
-  $("#saveSettings").onclick=function(){
-    store.set("key",$("#key").value.trim());
-    store.set("model",$("#model").value.trim()||"gemini-flash-latest");
-    store.set("sample",$("#sample").value.trim());
-    closeSettings();
-    setStatus("সেটিংস সেভ হয়েছে ✔","info");
-    setTimeout(function(){setStatus("")},1800);
-  };
-
-  /* ---------- inputs ---------- */
-  var inp=$("#inp");
-  inp.addEventListener("input",function(){
-    $("#inCount").textContent=words(inp.value)+" শব্দ";
-    store.set("draft",inp.value);
-  });
-  inp.value=store.get("draft","");
-  $("#inCount").textContent=words(inp.value)+" শব্দ";
-  $("#tone").value=store.get("tone","natural");
-  $("#strength").value=store.get("strength","medium");
-  $("#tone").onchange=function(){store.set("tone",this.value)};
-  $("#strength").onchange=function(){store.set("strength",this.value)};
-
-  $("#pasteBtn").onclick=function(){
-    if(navigator.clipboard&&navigator.clipboard.readText){
-      navigator.clipboard.readText().then(function(t){
-        inp.value=t; inp.dispatchEvent(new Event("input"));
-      }).catch(function(){setStatus("পেস্ট অনুমতি পাওয়া যায়নি। টেক্সট বক্সে চেপে ধরে পেস্ট করুন।","err")});
-    } else setStatus("এই ব্রাউজারে বাটন-পেস্ট চলে না। টেক্সট বক্সে চেপে ধরে পেস্ট করুন।","err");
-  };
-
-  /* ---------- API ---------- */
-  function friendlyError(status, apiMsg){
-    var m=(apiMsg||"").toLowerCase();
-    if(status===400 && (m.indexOf("api key")>-1||m.indexOf("api_key")>-1)) return "API Key ঠিক নেই। সেটিংসে গিয়ে আবার কপি-পেস্ট করুন।";
-    if(status===403) return "এই Key দিয়ে অ্যাক্সেস পাওয়া যায়নি (403)। Key ঠিক আছে কিনা এবং আপনার দেশ/অঞ্চলে সেবা চালু আছে কিনা দেখুন।";
-    if(status===404) return "মডেলের নাম পাওয়া যায়নি। সেটিংসে মডেল 'gemini-flash-latest' দিন।";
-    if(status===429) return "ফ্রি লিমিট শেষ (প্রতি মিনিট বা প্রতি দিনের)। কয়েক মিনিট পর আবার চেষ্টা করুন, অথবা সেটিংসে অন্য মডেল দিন।";
-    if(status>=500) return "Google-এর সার্ভারে সাময়িক সমস্যা ("+status+")। একটু পর আবার চেষ্টা করুন।";
-    return "সমস্যা হয়েছে ("+status+"): "+esc(apiMsg||"অজানা");
-  }
-
-  async function callGemini(text,tone,strength){
-    var key=store.get("key","");
-    if(!key) throw {code:"NOKEY"};
-    var model=store.get("model","gemini-flash-latest")||"gemini-flash-latest";
-    var sample=store.get("sample","");
-    var sys=BASE+"\n\n"+TONES[tone]+"\n"+STRENGTH[strength];
-    if(sample){
-      sys+="\n\nMatch the personal writing style of this sample (sentence rhythm, word choice, level of formality). Do not copy its content:\n<sample>\n"+sample+"\n</sample>";
-    }
-    var body={
-      systemInstruction:{parts:[{text:sys}]},
-      contents:[{role:"user",parts:[{text:text}]}],
-      generationConfig:{temperature:1.0,topP:0.95}
-    };
-    var ctrl=new AbortController();
-    var timer=setTimeout(function(){ctrl.abort()},90000);
-    var res;
-    try{
-      res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent",{
-        method:"POST",
-        headers:{"Content-Type":"application/json","x-goog-api-key":key},
-        body:JSON.stringify(body),
-        signal:ctrl.signal
-      });
-    }catch(e){
-      clearTimeout(timer);
-      if(e&&e.name==="AbortError") throw {msg:"অনেক সময় লাগছে, টাইমআউট হয়েছে। লেখা ছোট করে আবার দিন।"};
-      throw {msg:"ইন্টারনেট সংযোগ নেই, অথবা সংযোগ ব্লক হ
+var $=function(i){return document.getElementById(i)};
+key.value=localStorage.k||"";model.value=localStorage.m||"gemini-flash-latest";
+function sv(){localStorage.k=key.value.trim();localStorage.m=model.value.trim()||"gemini-flash-latest";set.style.display="none"}
+async function run(){
+ var t=inp.value.trim();
+ if(!t){st.textContent="আগে লেখা দিন।";return}
+ if(!localStorage.k){st.textContent="আগে সেটিংসে API Key দিন।";set.style.display="block";return}
+ go.disabled=true;st.style.color="#555";st.textContent="কাজ চলছে...";
+ var sys="Rewrite the user's text so it reads like a real person wrote it. Rules: same language as input, never translate; keep all facts, names, numbers unchanged; keep paragraph structure; vary sentence length a lot; use simple plain words; remove stock AI phrases and formulaic summaries; avoid overusing em dashes and lists of three. Tone: "+tone.value+". Output ONLY the rewritten text.";
+ try{
+  var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+(localStorage.m||"gemini-flash-latest")+":generateContent",{
+   method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":localStorage.k},
+   body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents:[{role:"user",parts:[{text:t}]}],generationConfig:{temperature:1}})});
+  var d=await r.json();
+  if(!r.ok)throw new Error((d.error&&d.error.message)||r.status);
+  out.textContent=d.candidates[0].content.parts.map(function(p){return p.text||""}).join("").trim();
+  out.style.display="block";cp.style.display="block";cp.textContent="📄 কপি";st.textContent="";
+ }catch(e){st.style.color="#c62828";st.textContent="সমস্যা: "+e.message}
+ go.disabled=false;
+}
+</script></body></html>
